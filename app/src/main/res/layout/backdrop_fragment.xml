@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="17dp"
+        android:fontFamily="sans-serif"
+        android:text="Se"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/froces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="arch"
+        android:textColor="#FF5252"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/ode"
+        app:layout_constraintStart_toEndOf="@+id/ode" />
+
+    <Button
+        android:id="@+id/backdrop_business"
+        android:layout_width="84dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:background="#37575656"
+        android:text="Business"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="@+id/ode"
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+    <Button
+        android:id="@+id/backdrop_Health"
+        android:layout_width="84dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="30dp"
+        android:background="#37575656"
+        android:text="Health"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBaseline_toBaselineOf="@+id/backdrop_entertainment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/backdrop_entertainment" />
+
+    <Button
+        android:id="@+id/backdrop_entertainment"
+        android:layout_width="wrap_content"
+        android:layout_height="31dp"
+        android:layout_marginStart="20dp"
+        android:background="#37575656"
+        android:text="Entertainment"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBaseline_toBaselineOf="@+id/backdrop_business"
+        app:layout_constraintStart_toEndOf="@+id/backdrop_business" />
+
+    <Button
+        android:id="@+id/backdrop_sports"
+        android:layout_width="wrap_content"
+        android:layout_height="31dp"
+        android:layout_marginStart="20dp"
+        android:layout_weight="1"
+        android:background="#37575656"
+        android:text="Sports"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBaseline_toBaselineOf="@+id/backdrop_science"
+        app:layout_constraintStart_toEndOf="@+id/backdrop_science" />
+
+    <Button
+        android:id="@+id/backdrop_science"
+        android:layout_width="84dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:background="#37575656"
+        android:text="Science"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ode"
+        app:layout_constraintTop_toBottomOf="@+id/backdrop_business"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/backdrop_technology"
+        android:layout_width="wrap_content"
+        android:layout_height="31dp"
+        android:layout_weight="1"
+        android:background="#37575656"
+        android:text="Technology"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBaseline_toBaselineOf="@+id/backdrop_sports"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/backdrop_sports" />
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        android:animateLayoutChanges="true"
+        android:background="#292828"
+        android:outlineAmbientShadowColor="#ffffff"
+        android:outlineSpotShadowColor="@color/colorPrimary"
+
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/froces"
+        app:layout_constraintTop_toTopOf="@+id/froces"
+        tools:visibility="visible">
+
+    </SearchView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
