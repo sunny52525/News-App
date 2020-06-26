@@ -66,7 +66,7 @@ class RecyclerViewAdapterNews(
 //            listener.dataFound()
             val newsDataAdapter = newsadapter[position]
             if (newsDataAdapter.urlToImage.isNotEmpty()) {
-                Picasso.get().load(newsDataAdapter.urlToImage!!)
+                Picasso.get().load(newsDataAdapter.urlToImage)
                     .error(R.drawable.news)
                     .resize(2048, 1600)
                     .onlyScaleDown()

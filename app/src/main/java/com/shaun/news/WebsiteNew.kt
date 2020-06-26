@@ -53,7 +53,6 @@ class WebViewSampleActivity : Activity() {
 
     }
 
-
     override fun onBackPressed() {
         if (webView1.canGoBack()) {
             webView1.goBack()

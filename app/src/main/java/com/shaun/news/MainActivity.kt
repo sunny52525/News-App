@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(Tag, "ONCREAd")
         setContentView(R.layout.activity_main)
         recycler_view_news.visibility = View.GONE
-        test.isRefreshing = true;
+        test.isRefreshing = true
         configureBackdrop()
 
         val getRawData = GetRawData(this)
@@ -72,9 +72,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                getWindow().setSoftInputMode(
+                window.setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-                );
+                )
                 currentQuery =
                     "https://newsapi.org/v2/top-headlines?q=$query&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
                 val getRawData = GetRawData(this@MainActivity)
@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         val fragment = supportFragmentManager.findFragmentById(R.id.filter_fragment2)
 
         fragment?.let {
-            BottomSheetBehavior.from(fragment.requireView())?.let { bsb ->
+            BottomSheetBehavior.from(fragment.requireView()).let { bsb ->
                 bsb.state = BottomSheetBehavior.STATE_HIDDEN
 
                 floatingActionButton.setOnClickListener {
@@ -318,9 +318,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun hide(activity: Activity) {
-        getWindow().setSoftInputMode(
+        window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-        );
+        )
     }
 
 }
