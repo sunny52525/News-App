@@ -10,25 +10,31 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.backdrop_fragment.*
 import java.util.*
 
+
 private const val Tag = "MainActivity"
 private var cachedData = ""
+
+private var found = true
+
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
-    JsonDataParser.OnDataParsed, RecyclerViewAdapterNews.NoDatafound,
+    JsonDataParser.OnDataParsed,
+//    RecyclerViewAdapterNews.NoDatafound,
     RecyclerItemClickListener.OnRecyclerClickListener {
-    private val recyclerViewAdapter = RecyclerViewAdapterNews(this, ArrayList())
+    private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList())
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
     private var currentQuery =
         "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
@@ -47,9 +53,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         if (cachedData.isEmpty())
             getRawData.downloadRawData("$currentQuery", 1)
         else
-            onDownloadComplete(cachedData, DownloadStatus.OK, 1)
+            onDownloadComplete(Pair(cachedData, -1), DownloadStatus.OK, 1)
 
         test.setOnRefreshListener {
+//            hide(this)
             getRawData.downloadRawData(currentQuery, 1)
         }
 
@@ -94,22 +101,26 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         })
 
         recycler_view_news.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
                 if (dy < 0) {
                     floatingActionButton.show()
                 } else
                     if (dy > 0) {
                         floatingActionButton.hide()
                     }
+
             }
         })
 
         val listener = View.OnClickListener { v ->
             val b = v as Button
-            hide(this)
+//            hide(this)
             var link = b.text.toString().toLowerCase()
 
             currentQuery =
+
                 "https://newsapi.org/v2/top-headlines?q=$link&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
             getRawData.downloadRawData(currentQuery, 1)
             Handler().postDelayed(
@@ -129,22 +140,36 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     }
 
-    override fun onDownloadComplete(data: String, status: DownloadStatus, id: Int) {
-        cachedData = data
-        if (data.length < 50 && id == 1) {
+    override fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int) {
+        if (data.second != -1)
+            cachedData = data.first
+        Log.d(Tag, "+++++++++++++++++++++++++++++++++")
+        Log.d(Tag, "cached data is $cachedData")
+        Log.d(Tag, "++++++++++++++++++++++++++++++++")
+        if (data.first.length < 50 && id == 1) {
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
             getRawData.downloadRawData(currentQuery, 2)
-        } else{
+        } else if (data.first.length < 50 && id == 2) {
+            cachedData = ""
+            found = false
+            val jsonDataParser = JsonDataParser(this)
+            jsonDataParser.parseJson(cachedData)
+
+            noDataFound()
+
+
+        } else {
+            found = true
+            dataFound()
             Log.d("MainActivity", "Download Complete")
             val jsonDataParser = JsonDataParser(this)
-            jsonDataParser.parseJson(data)
+            jsonDataParser.parseJson(data.first)
         }
     }
 
     override fun onDataParsed(data: ArrayList<newsData>) {
         Log.d(Tag, "Data Parsed ${data.size}")
-
 
         recyclerViewAdapter.loadNewData(data)
         recycler_view_news.visibility = View.VISIBLE
@@ -155,8 +180,26 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun onError(exception: Exception) {
+        if (cachedData.isNotEmpty()) {
+            Log.d(Tag, "*********************************")
+            Log.d(Tag, "cached data is $cachedData")
+            Log.d(Tag, "*********************************")
+            val jsonDataParser = JsonDataParser(this)
+            jsonDataParser.parseJson(cachedData)
+        }
         Log.d(Tag, "error with $exception")
-      TODO("SHOW POPUP")
+        Log.d(Tag, "Cached data is $cachedData")
+
+        if (found) {
+            val snackbar = Snackbar
+                .make(test, "No Connection", Snackbar.LENGTH_LONG)
+                .setAction("Retry") {
+                    val getRawData = GetRawData(this)
+                    getRawData.downloadRawData(currentQuery, 1)
+                    test.isRefreshing = true
+                }
+            snackbar.show()
+        }
     }
 
 
@@ -168,10 +211,13 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                 bsb.state = BottomSheetBehavior.STATE_HIDDEN
 
                 floatingActionButton.setOnClickListener {
-                    Log.d(Tag,"*********************************")
 
-                    Log.d(Tag,"WORKING")
+
+                    Log.d(Tag, "WORKING")
                     searchView.onActionViewExpanded()
+                    searchView.doOnLayout {
+                        searchView.clearFocus()
+                    }
                     bsb.state = STATE_EXPANDED
                     test.isEnabled = false
                 }
@@ -220,12 +266,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         return super.onOptionsItemSelected(item)
     }
 
-    override fun noDataFound() {
-        TODO()
+    fun noDataFound() {
+        Log.d(Tag, "NODATA FOUND")
+        activity_noData.visibility = View.VISIBLE
     }
 
-    override fun dataFound() {
-
+    fun dataFound() {
+        Log.d(Tag, "Data FOUND")
+        activity_noData.visibility = View.GONE
     }
 
     override fun onItemClick(view: View, postion: Int) {
@@ -261,10 +309,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             }
         }
     }
+
     private fun hide(activity: Activity) {
-        val imm: InputMethodManager =
-            activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0) // hide
+        getWindow().setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
     }
 
 }

@@ -25,14 +25,14 @@ class NewsRecyclerViewAdapter(view: View) : RecyclerView.ViewHolder(view) {
 
 
 class RecyclerViewAdapterNews(
-    private val listener: NoDatafound,
+//    private val listener: NoDatafound,
     private var newsadapter: List<newsData>
 ) :
     RecyclerView.Adapter<NewsRecyclerViewAdapter>() {
-    interface NoDatafound {
-        fun noDataFound()
-        fun dataFound()
-    }
+//    interface NoDatafound {
+//        fun noDataFound()
+//        fun dataFound()
+//    }
 
     private val tag = "RecyclerViewAdapt"
 
@@ -62,9 +62,12 @@ class RecyclerViewAdapterNews(
     override fun onBindViewHolder(holder: NewsRecyclerViewAdapter, position: Int) {
 
         if (newsadapter.isEmpty()) {
-            listener.noDataFound()
+        Log.d("TAG","NodataFound")
+//            listener.noDataFound()
         } else {
-            listener.dataFound()
+
+            Log.d("TAG","data Found")
+//            listener.dataFound()
             val newsDataAdapter = newsadapter[position]
             if (newsDataAdapter.urlToImage.isNotEmpty()) {
                 Picasso.get().load(newsDataAdapter.urlToImage!!)
