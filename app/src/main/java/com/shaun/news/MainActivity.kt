@@ -142,9 +142,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     override fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int) {
         if (data.second != -1)
             cachedData = data.first
-        Log.d(Tag, "+++++++++++++++++++++++++++++++++")
-        Log.d(Tag, "cached data is $cachedData")
-        Log.d(Tag, "++++++++++++++++++++++++++++++++")
         if (data.first.length < 50 && id == 1) {
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
@@ -180,9 +177,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onError(exception: Exception) {
         if (cachedData.isNotEmpty()) {
-            Log.d(Tag, "*********************************")
             Log.d(Tag, "cached data is $cachedData")
-            Log.d(Tag, "*********************************")
             val jsonDataParser = JsonDataParser(this)
             jsonDataParser.parseJson(cachedData)
         }

@@ -25,14 +25,10 @@ class NewsRecyclerViewAdapter(view: View) : RecyclerView.ViewHolder(view) {
 
 
 class RecyclerViewAdapterNews(
-//    private val listener: NoDatafound,
     private var newsadapter: List<newsData>
 ) :
     RecyclerView.Adapter<NewsRecyclerViewAdapter>() {
-//    interface NoDatafound {
-//        fun noDataFound()
-//        fun dataFound()
-//    }
+
 
     private val tag = "RecyclerViewAdapt"
 

@@ -9,15 +9,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import kotlin.math.min
 
-/**
-websiteName: String,
-author: String,
-title: String,
-description: String,
-urlToaArticle: String,
-urlToImage: String,
-datePublished: String
- */
 class JsonDataParser(private  val listener:OnDataParsed) {
     private val Tag="JsonDataParser"
     interface OnDataParsed {

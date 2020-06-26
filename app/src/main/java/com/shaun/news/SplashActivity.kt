@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault_NoActionBar)
         setContentView(R.layout.activity_splash_screen)
-        Handler().postDelayed(Runnable { // This method will be executed once the timer is over
+        Handler().postDelayed(Runnable {
             // Start your app main activity
             val i = Intent(
                 this,
