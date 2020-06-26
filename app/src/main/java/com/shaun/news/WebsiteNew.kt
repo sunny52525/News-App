@@ -11,7 +11,9 @@ import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.webview.*
 
-
+/**
+ * Credit StackOverFlow
+ */
 class WebViewSampleActivity : Activity() {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

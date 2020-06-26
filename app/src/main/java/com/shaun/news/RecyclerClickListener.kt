@@ -7,7 +7,9 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
-
+/**
+ * Code Inspiration from Tim, LearnProgramming.academy
+ */
 class RecyclerItemClickListener(private val listener: MainActivity,
     context: Context,
     recylerview:RecyclerView

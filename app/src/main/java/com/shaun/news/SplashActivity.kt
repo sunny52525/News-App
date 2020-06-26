@@ -13,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault_NoActionBar)
         setContentView(R.layout.activity_splash_screen)
-        Handler().postDelayed(Runnable {
-            // Start your app main activity
+        Handler().postDelayed({
             val i = Intent(
                 this,
                 MainActivity::class.java

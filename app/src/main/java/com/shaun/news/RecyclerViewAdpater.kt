@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.each_news.view.*
 
+/**
+ * Code Inspiration from Tim, LearnProgramming.academy
+ */
 
 class NewsRecyclerViewAdapter(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -63,7 +66,6 @@ class RecyclerViewAdapterNews(
         } else {
 
             Log.d("TAG","data Found")
-//            listener.dataFound()
             val newsDataAdapter = newsadapter[position]
             if (newsDataAdapter.urlToImage.isNotEmpty()) {
                 Picasso.get().load(newsDataAdapter.urlToImage)
