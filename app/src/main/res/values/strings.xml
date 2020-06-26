@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">News</string>
+    <string name="About_ME">
+    Hi,I am Sunny.An Ungrad Student(2023) in Computer Science \nI made this App using an News API (https://newsapi.org/)\n
+    </string>
+    <string name="LINKS">
+        Connect with \nme\nFacebook.com/sunny52525\nTwitter.com/sunny52525
+        \n
+    </string>
+    <string name="about_weblink">Source code available of this app and Other small Things I made at https://github.com/sunny52525</string>
+    <string name="about_email">For support or suggestion, email kumarsunny3232@gmail.com\n</string>
+    <string name="facebook">To connect with me \nwww.facebook.com/sunny52525\nwww.twitter.com/sunny52525</string>
 </resources>

@@ -38,7 +38,7 @@
             <TextView
                 android:id="@+id/each_new_title"
                 android:layout_width="0dp"
-                android:layout_height="39dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
@@ -53,7 +53,7 @@
             <TextView
                 android:id="@+id/each_news_description"
                 android:layout_width="0dp"
-                android:layout_height="62dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="TextView"

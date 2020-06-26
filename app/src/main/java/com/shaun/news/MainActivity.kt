@@ -2,6 +2,7 @@ package com.shaun.news
 
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.*
@@ -32,13 +33,12 @@ private var found = true
 
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     JsonDataParser.OnDataParsed,
-//    RecyclerViewAdapterNews.NoDatafound,
     RecyclerItemClickListener.OnRecyclerClickListener {
     private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList())
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
     private var currentQuery =
         "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
-
+    private var aboutDialog: AlertDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(Tag, "ONCREA")
 
@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             onDownloadComplete(Pair(cachedData, -1), DownloadStatus.OK, 1)
 
         test.setOnRefreshListener {
-//            hide(this)
             getRawData.downloadRawData(currentQuery, 1)
         }
 
@@ -241,6 +240,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             }
         } ?: super.onBackPressed()
         test.isEnabled = true
+        hide(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -258,12 +258,24 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                 test.isEnabled = true
                 true
             }
+            R.id.menu_aboutMe -> showaboutdialog()
             else -> {
                 Toast.makeText(this, "Not Possible", Toast.LENGTH_SHORT).show()
                 true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showaboutdialog() {
+        val messgView = layoutInflater.inflate(R.layout.about, null, false)
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle(R.string.app_name)
+        builder.setIcon(R.mipmap.ic_launcher)
+        aboutDialog = builder.setView(messgView).create()
+        aboutDialog?.setCanceledOnTouchOutside(true)
+        aboutDialog?.show()
     }
 
     fun noDataFound() {
