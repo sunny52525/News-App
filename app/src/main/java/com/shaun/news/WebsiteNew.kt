@@ -2,28 +2,30 @@ package com.shaun.news
 
 import android.app.Activity
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.webview.*
 
 
 class WebViewSampleActivity : Activity() {
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.webview)
         setTheme(android.R.style.ThemeOverlay_Material_Dark_ActionBar)
         val intent = intent
-        var link = intent.extras?.getString("data")
-        var correctLink = ""
+        val link = intent.extras?.getString("data")
+        val correctLink: String
         if (link?.get(4)!! != 's') {
             correctLink = link.substring(0, 4) + 's' + link.substring(4, link.length)
 
         } else correctLink = link
-
         Log.d("WEBVIEW", correctLink)
 
         webView1.webViewClient = object : WebViewClient() {
