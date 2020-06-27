@@ -49,11 +49,17 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         test.isRefreshing = true
         configureBackdrop()
 
+        val splashData = intent.getStringExtra("RAW")
+
+        Log.d(Tag, "RAW DATA FROM SPLASH IS $splashData")
         val getRawData = GetRawData(this)
-        if (cachedData.isEmpty())
-            getRawData.downloadRawData("$currentQuery", 1)
-        else
-            onDownloadComplete(Pair(cachedData, -1), DownloadStatus.OK, 1)
+        if (splashData != null) {
+            onDownloadComplete(Pair(splashData, -1), DownloadStatus.OK, 1)
+        } else
+            if (cachedData.isEmpty())
+                getRawData.downloadRawData("$currentQuery", 1)
+            else
+                onDownloadComplete(Pair(cachedData, -1), DownloadStatus.OK, 1)
 
         test.setOnRefreshListener {
             getRawData.downloadRawData(currentQuery, 1)
@@ -142,6 +148,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     override fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int) {
         if (data.second != -1)
             cachedData = data.first
+
         if (data.first.length < 50 && id == 1) {
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
