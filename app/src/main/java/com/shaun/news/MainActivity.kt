@@ -4,7 +4,9 @@ package com.shaun.news
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.net.Uri
 import android.os.*
 import android.util.Log
 import android.view.Menu
@@ -15,6 +17,7 @@ import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -295,11 +298,35 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(Tag, "OnItemClick Is working")
         val websitenews = recyclerViewAdapter.getNews(postion)
         Log.d(Tag, "$websitenews")
-        if (websitenews != null) {
+        /**
+         *   //USE THIS CODE TO USE WEBVIEW INSTEAD OF CUSTOM TABS
+         *   ////////////////////////////////////////////////////
+             if (websitenews != null) {
             val intent = Intent(this, WebViewSampleActivity::class.java)
             intent.putExtra("data", websitenews.urlToArticle)
             startActivity(intent)
-        }
+            }
+
+            OneSignal.startInit(this).init()
+            initInstances()
+            webView1.webViewClient = MyCustomWebViewClient()
+            webView1.loadUrl("${websitenews?.urlToArticle}")
+          */
+
+
+        /**
+         * Instead of Using WebView, It will now use chrome(is Installed),else firefoxw custom Tabs to open Articles
+         */
+        val builder = CustomTabsIntent.Builder()
+        builder.enableUrlBarHiding()
+        builder.setShowTitle(true)
+        builder.setToolbarColor(Color.TRANSPARENT)
+        val customTabsIntent = builder.build()
+        if (isAppInstalled("com.android.chrome"))
+            customTabsIntent.intent.setPackage("com.android.chrome")
+        else if (isAppInstalled("org.mozilla.firefox"))
+            customTabsIntent.intent.setPackage("org.mozilla.firefox")
+        customTabsIntent.launchUrl(this, Uri.parse(websitenews?.urlToArticle))
 
     }
 
@@ -327,6 +354,15 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         )
+    }
+
+    private fun isAppInstalled(PackageCustom: String): Boolean {
+        return try {
+            packageManager.getPackageInfo(PackageCustom, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
 }
