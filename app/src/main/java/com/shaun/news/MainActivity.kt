@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         Log.d(Tag, "RAW DATA FROM SPLASH IS $splashData")
         val getRawData = GetRawData(this)
-        if (splashData != null) {
+        if (splashData.isNotEmpty()) {
             onDownloadComplete(Pair(splashData, -1), DownloadStatus.OK, 1)
         } else
             if (cachedData.isEmpty())
@@ -150,6 +150,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             cachedData = data.first
 
         if (data.first.length < 50 && id == 1) {
+            Log.d(Tag, "How tf it got here")
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
             getRawData.downloadRawData(currentQuery, 2)
@@ -158,9 +159,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             found = false
             val jsonDataParser = JsonDataParser(this)
             jsonDataParser.parseJson(cachedData)
-
             noDataFound()
-
 
         } else {
             found = true

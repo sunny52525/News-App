@@ -19,32 +19,33 @@ class GetRawData(private val listener: OnDownloadComplete) {
     private var downloadStatus = DownloadStatus.IDLE
 
     interface OnDownloadComplete {
-        fun onDownloadComplete(data: Pair<String,Int>, status: DownloadStatus,id: Int)
+        fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int)
     }
 
-    fun downloadRawData(link: String, id:Int) {
+    fun downloadRawData(link: String, id: Int) {
 
         GlobalScope.launch {
             val result = downloadInBackground(link)
             withContext(Dispatchers.Main) {
-                Log.d(Tag,"Download Complete with Result $result")
-                listener.onDownloadComplete(result, downloadStatus,id)
+                Log.d(Tag, "Download Complete with Result $listener $result")
+                listener.onDownloadComplete(result, downloadStatus, id)
             }
         }
 
     }
 
-    private fun downloadInBackground(link: String): Pair<String,Int> {
+    private fun downloadInBackground(link: String): Pair<String, Int> {
         Log.d(Tag, "downloadInBackground Starts")
         if (link.isEmpty()) {
             downloadStatus = DownloadStatus.NOT_INITIALISED
-            return Pair("NO Url Specified",-1)
+            return Pair("NO Url Specified", -1)
         }
         try {
+            Log.d(Tag, "$listener $link")
             downloadStatus = DownloadStatus.OK
             val data: String? = URL(link).readText()
             Log.d(Tag, data!!)
-            return Pair(data,1)
+            return Pair(data, 1)
         } catch (e: Exception) {
             val errorMessage = when (e) {
                 is MalformedURLException -> {
@@ -68,7 +69,7 @@ class GetRawData(private val listener: OnDownloadComplete) {
                 }
             }
             Log.e(Tag, errorMessage)
-            return Pair(errorMessage,-1)
+            return Pair(errorMessage, -1)
         }
     }
 

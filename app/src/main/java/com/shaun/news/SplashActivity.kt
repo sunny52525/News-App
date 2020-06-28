@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class SplashActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
     private val SPLASH_TIME_OUT = 5000L   //Time out for PreDownload
-    var rawdataa = "aa"
+    var rawdataa =""
     var started = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
         val getRawData = GetRawData(this)
         getRawData.downloadRawData(
             "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c",
-            1
+            2
         )
         Handler().postDelayed({
             StartMain(true)
