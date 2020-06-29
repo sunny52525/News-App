@@ -165,9 +165,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         Log.d(Tag, "Data Parsed ${data}")
         if(id==1)
           {
-
+              if(data.size!=0)
+                  dataFound()
               recyclerViewAdapter.loadNewData(data)
-            if(data.size==0){
+            if(data.size==0 ){
                 noDataFound("No Headlines Found,Searching for Everything related to the query")
             }
           }
