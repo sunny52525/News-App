@@ -55,7 +55,10 @@ class RecyclerViewAdapterNews(
         newsadapter = newdata
         notifyDataSetChanged()
     }
-
+    fun appenddata(newsData: List<newsData>){
+        newsadapter+=newsData
+        notifyDataSetChanged()
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: NewsRecyclerViewAdapter, position: Int) {

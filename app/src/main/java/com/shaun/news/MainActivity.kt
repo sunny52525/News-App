@@ -124,9 +124,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         val listener = View.OnClickListener { v ->
             val b = v as Button
-//            hide(this)
             var link = b.text.toString().toLowerCase()
-
             currentQuery =
 
                 "https://newsapi.org/v2/top-headlines?q=$link&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
@@ -151,33 +149,38 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     override fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int) {
         if (data.second != -1)
             cachedData = data.first
-
-        if (data.first.length < 50 && id == 1) {
+        Log.d("MainActivity", "Download Complete")
+        val jsonDataParser = JsonDataParser(this)
+        jsonDataParser.parseJson(data.first,id)
+        if (id == 1)
+        {
             Log.d(Tag, "How tf it got here")
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
             getRawData.downloadRawData(currentQuery, 2)
-        } else if (data.first.length < 50 && id == 2) {
-            cachedData = ""
-            found = false
-            val jsonDataParser = JsonDataParser(this)
-            jsonDataParser.parseJson(cachedData)
-            noDataFound()
-
-        } else {
-            found = true
-            dataFound()
-            Log.d("MainActivity", "Download Complete")
-            val jsonDataParser = JsonDataParser(this)
-            jsonDataParser.parseJson(data.first)
         }
     }
 
-    override fun onDataParsed(data: ArrayList<newsData>) {
-        Log.d(Tag, "Data Parsed ${data.size}")
+    override fun onDataParsed(data: ArrayList<newsData>,id: Int) {
+        Log.d(Tag, "Data Parsed ${data}")
+        if(id==1)
+          {
 
-        recyclerViewAdapter.loadNewData(data)
+              recyclerViewAdapter.loadNewData(data)
+            if(data.size==0){
+                noDataFound("No Headlines Found,Searching for Everything related to the query")
+            }
+          }
+        else
+           {  if(data.size!=0)
+               dataFound()
+               recyclerViewAdapter.appenddata(data)}
+        if(id==2 && recyclerViewAdapter.itemCount==0){
+            noDataFound("No News found,Try searching Something else")
+        }
+
         recycler_view_news.visibility = View.VISIBLE
+        if(data.size!=0 || id==2)
         test.isRefreshing = false
         recycler_view_news.smoothScrollToPosition(0)
         Log.d(Tag, "onData Pared ends")
@@ -188,7 +191,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         if (cachedData.isNotEmpty()) {
             Log.d(Tag, "cached data is $cachedData")
             val jsonDataParser = JsonDataParser(this)
-            jsonDataParser.parseJson(cachedData)
+            jsonDataParser.parseJson(cachedData,2)
         }
         Log.d(Tag, "error with $exception")
         Log.d(Tag, "Cached data is $cachedData")
@@ -282,8 +285,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         aboutDialog?.show()
     }
 
-    fun noDataFound() {
+    fun noDataFound(msg:String) {
         Log.d(Tag, "NODATA FOUND")
+        activity_noData.text=msg
         activity_noData.visibility = View.VISIBLE
     }
 
@@ -306,11 +310,6 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             intent.putExtra("data", websitenews.urlToArticle)
             startActivity(intent)
             }
-
-            OneSignal.startInit(this).init()
-            initInstances()
-            webView1.webViewClient = MyCustomWebViewClient()
-            webView1.loadUrl("${websitenews?.urlToArticle}")
           */
 
 

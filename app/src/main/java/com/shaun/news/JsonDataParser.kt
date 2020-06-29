@@ -12,15 +12,15 @@ import kotlin.math.min
 class JsonDataParser(private  val listener:OnDataParsed) {
     private val Tag="JsonDataParser"
     interface OnDataParsed {
-       fun onDataParsed(data:ArrayList<newsData>)
+       fun onDataParsed(data:ArrayList<newsData>,id: Int)
         fun onError(exception: Exception)
     }
 
-    fun parseJson(rawData: String){
+    fun parseJson(rawData: String ,id:Int){
         GlobalScope.launch {
             val result = parseNews(rawData)
             withContext(Dispatchers.Main){
-                listener.onDataParsed(result)
+                listener.onDataParsed(result,id)
             }
         }
     }
