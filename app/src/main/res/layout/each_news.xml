@@ -82,6 +82,14 @@
                 app:layout_constraintStart_toEndOf="@+id/each_news_websiteName"
                 app:layout_constraintTop_toTopOf="@+id/each_news_websiteName" />
 
+            <TextView
+                android:id="@+id/each_link"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="TextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

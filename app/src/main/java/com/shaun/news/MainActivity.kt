@@ -37,7 +37,7 @@ private var found = true
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     JsonDataParser.OnDataParsed,
     RecyclerItemClickListener.OnRecyclerClickListener {
-    private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList())
+    private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList(),this)
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
     private var currentQuery =
         "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
@@ -331,7 +331,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun onItemLongClick(view: View, postion: Int) {
-        vibrate(30L)
+
     }
 
     private fun vibrate(sec: Long) {
