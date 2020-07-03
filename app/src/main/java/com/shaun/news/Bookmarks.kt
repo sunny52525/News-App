@@ -62,7 +62,7 @@ class Bookmarks : AppCompatActivity(), BookmarkViewAdapter.OnNewsClickListener {
 
     override fun onNewsClick(position: Int) {
         Log.d(TAG, "onNewsClick********************>: $position")
-        val uri = NewsContract.buildUriFromId(position.toLong())
+        val uri = NewsContract.buildUriFromId(position+1.toLong())
         val affected = contentResolver.delete(uri, null, null)
         Log.d(TAG, "onNewsClick: --$affected")
     }
