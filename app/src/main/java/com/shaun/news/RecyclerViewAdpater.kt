@@ -7,13 +7,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -31,7 +28,8 @@ class NewsRecyclerViewAdapter(view: View) : RecyclerView.ViewHolder(view) {
     val website: TextView = view.each_news_websiteName
     val date: TextView = view.each_news_date
     val newsImage: ImageView = view.imageView
-    val newslink:TextView=view.each_link
+    val newslink: TextView = view.each_link
+    val img: TextView = view.each_img_link
 
 }
 
@@ -42,10 +40,9 @@ class RecyclerViewAdapterNews(
     RecyclerView.Adapter<NewsRecyclerViewAdapter>() {
     private val contex = context
 
+    //    val viewModel: MyNotesViewModel by activityViewModels()
     private val tag = "RecyclerViewAdapt"
-    interface OnshareClicked {
-        fun share(title:String,link:String)
-    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsRecyclerViewAdapter {
         Log.d(tag, "onCreateViewHolder new view requested")
         val view =
@@ -96,36 +93,15 @@ class RecyclerViewAdapterNews(
             holder.description.text = newsDataAdapter.description
             holder.date.text = newsDataAdapter.datePublished
             holder.website.text = newsDataAdapter.websiteName
-            holder.newslink.text=newsDataAdapter.urlToArticle
+            holder.newslink.text = newsDataAdapter.urlToArticle
+            holder.img.text = newsDataAdapter.urlToImage
 
-        }
-        /////////////////////
-        holder.itemView.setOnLongClickListener {
-            val popup = PopupMenu(contex, holder.itemView)
-            popup.inflate(R.menu.menu_options)
-            popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-                override fun onMenuItemClick(item: MenuItem): Boolean {
-                    when (item.getItemId()) {
-                        R.id.options_share -> {
-                           share(holder.newsTitle.text.toString(),holder.newslink.text.toString())
-                            return true
-                        }
-                        R.id.options_bookmark->{
-                            Toast.makeText(contex,"Coming Soon", Toast.LENGTH_SHORT).show()
-                           return true
-                        }
-                        else -> return false
-                    }
-                }
-            })
-            popup.show()
-            true
         }
 
     }
 
 
-    private fun share(title:String,link:String){
+    private fun share(title: String, link: String) {
         val strBuilder = StringBuilder();
         strBuilder.appendln(title)
         strBuilder.appendln(link);

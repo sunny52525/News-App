@@ -3,7 +3,9 @@ package com.shaun.news
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -17,7 +19,9 @@ import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +30,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.backdrop_fragment.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -37,8 +43,9 @@ private var found = true
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     JsonDataParser.OnDataParsed,
     RecyclerItemClickListener.OnRecyclerClickListener {
-    private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList(),this)
+    private val recyclerViewAdapter = RecyclerViewAdapterNews(ArrayList(), this)
     private var mBottomSheetBehavior: BottomSheetBehavior<View?>? = null
+
     private var currentQuery =
         "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
     private var aboutDialog: AlertDialog? = null
@@ -151,9 +158,8 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             cachedData = data.first
         Log.d("MainActivity", "Download Complete")
         val jsonDataParser = JsonDataParser(this)
-        jsonDataParser.parseJson(data.first,id)
-        if (id == 1)
-        {
+        jsonDataParser.parseJson(data.first, id)
+        if (id == 1) {
             Log.d(Tag, "How tf it got here")
             currentQuery = currentQuery.replace("top-headlines", "everything")
             val getRawData = GetRawData(this)
@@ -161,28 +167,27 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         }
     }
 
-    override fun onDataParsed(data: ArrayList<newsData>,id: Int) {
+    override fun onDataParsed(data: ArrayList<newsData>, id: Int) {
         Log.d(Tag, "Data Parsed ${data}")
-        if(id==1)
-          {
-              if(data.size!=0)
-                  dataFound()
-              recyclerViewAdapter.loadNewData(data)
-            if(data.size==0 ){
+        if (id == 1) {
+            if (data.size != 0)
+                dataFound()
+            recyclerViewAdapter.loadNewData(data)
+            if (data.size == 0) {
                 noDataFound("No Headlines Found,Searching for Everything related to the query")
             }
-          }
-        else
-           {  if(data.size!=0)
-               dataFound()
-               recyclerViewAdapter.appenddata(data)}
-        if(id==2 && recyclerViewAdapter.itemCount==0){
+        } else {
+            if (data.size != 0)
+                dataFound()
+            recyclerViewAdapter.appenddata(data)
+        }
+        if (id == 2 && recyclerViewAdapter.itemCount == 0) {
             noDataFound("No News found,Try searching Something else")
         }
 
         recycler_view_news.visibility = View.VISIBLE
-        if(data.size!=0 || id==2)
-        test.isRefreshing = false
+        if (data.size != 0 || id == 2)
+            test.isRefreshing = false
         recycler_view_news.smoothScrollToPosition(0)
         Log.d(Tag, "onData Pared ends")
 
@@ -192,7 +197,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         if (cachedData.isNotEmpty()) {
             Log.d(Tag, "cached data is $cachedData")
             val jsonDataParser = JsonDataParser(this)
-            jsonDataParser.parseJson(cachedData,2)
+            jsonDataParser.parseJson(cachedData, 2)
         }
         Log.d(Tag, "error with $exception")
         Log.d(Tag, "Cached data is $cachedData")
@@ -258,6 +263,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(Tag, "onOptionsItemSelected: ${item}")
         when (item.itemId) {
             R.id.refresh -> {
                 test.isRefreshing = true
@@ -266,7 +272,14 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                 test.isEnabled = true
                 true
             }
-            R.id.menu_aboutMe -> showaboutdialog()
+            R.id.menu_aboutMe -> {
+                showaboutdialog()
+            }
+            R.id.menu_bookmark -> {
+                val intent = Intent(this, Bookmarks::class.java)
+                startActivity(intent)
+                true
+            }
             else -> {
                 Toast.makeText(this, "Not Possible", Toast.LENGTH_SHORT).show()
                 true
@@ -286,9 +299,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         aboutDialog?.show()
     }
 
-    fun noDataFound(msg:String) {
+    fun noDataFound(msg: String) {
         Log.d(Tag, "NODATA FOUND")
-        activity_noData.text=msg
+        activity_noData.text = msg
         activity_noData.visibility = View.VISIBLE
     }
 
@@ -306,12 +319,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         /**
          *   //USE THIS CODE TO USE WEBVIEW INSTEAD OF CUSTOM TABS
          *   ////////////////////////////////////////////////////
-             if (websitenews != null) {
-            val intent = Intent(this, WebViewSampleActivity::class.java)
-            intent.putExtra("data", websitenews.urlToArticle)
-            startActivity(intent)
-            }
-          */
+        if (websitenews != null) {
+        val intent = Intent(this, WebViewSampleActivity::class.java)
+        intent.putExtra("data", websitenews.urlToArticle)
+        startActivity(intent)
+        }
+         */
 
 
         /**
@@ -332,6 +345,56 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
     override fun onItemLongClick(view: View, postion: Int) {
 
+        val websitenews = recyclerViewAdapter.getNews(postion)
+        val popup = PopupMenu(this, view)
+        popup.inflate(R.menu.menu_options)
+        popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+            override fun onMenuItemClick(item: MenuItem): Boolean {
+                when (item.getItemId()) {
+                    R.id.options_share -> {
+                        share(websitenews!!.title, websitenews!!.urlToArticle)
+                        return true
+                    }
+                    R.id.options_bookmark -> {
+                        Toast.makeText(this@MainActivity, "Coming Soon", Toast.LENGTH_SHORT).show()
+                        addtoBookmark(websitenews)
+                        return true
+                    }
+                    else -> return false
+                }
+            }
+        })
+        popup.show()
+        vibrate(30L)
+    }
+
+    private fun addtoBookmark(websitenews: newsData?) {
+        val news = NewsBookmarks(
+            websitenews!!.title,
+            websitenews.description,
+            websitenews.websiteName,
+            websitenews.datePublished,
+            websitenews.urlToArticle,
+            websitenews.urlToImage,
+            0
+        )
+        val values = ContentValues()
+        values.put(NewsContract.Columns.NEWS_TITLE, news.title)
+        values.put(NewsContract.Columns.NEWS_DESCRIPTION, news.description)
+        values.put(NewsContract.Columns.NEWS_WEBSITE, news.websiteName)
+        values.put(NewsContract.Columns.NEWS_DATE, news.date)
+        values.put(NewsContract.Columns.NEWS_IMG, news.urlToImage)
+        values.put(NewsContract.Columns.NEWS_LINK, news.urlToArticlle)
+        GlobalScope.launch {
+            val uri = getApplication().contentResolver?.insert(
+                NewsContract.CONTENT_URI,
+                values
+            )
+            if (uri != null) {
+                news.id = NewsContract.getId(uri)
+            }
+        }
+        println("***************************************")
     }
 
     private fun vibrate(sec: Long) {
@@ -365,4 +428,22 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         }
     }
 
+    private fun share(title: String, link: String) {
+        val strBuilder = StringBuilder();
+        strBuilder.appendln(title)
+        strBuilder.appendln(link);
+        strBuilder.append("Share Via NewsApp@Sunny")
+
+        val shareIntent =
+            Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, strBuilder.toString())
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "News Share")
+        ContextCompat.startActivity(
+            this,
+            Intent.createChooser(shareIntent, "Share..."),
+            Bundle.EMPTY
+        )
+
+    }
 }
