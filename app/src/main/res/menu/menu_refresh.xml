@@ -5,10 +5,10 @@
         android:id="@+id/refresh"
         android:title="Refresh" />
     <item
-        android:id="@+id/menu_aboutMe"
-        android:title="About me" />
-    <item
         android:id="@+id/menu_bookmark"
         android:title="Bookmarks" />
+    <item
+        android:id="@+id/menu_aboutMe"
+        android:title="About me" />
 
 </menu>

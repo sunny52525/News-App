@@ -1,7 +1,6 @@
 package com.shaun.news
 
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
@@ -40,6 +39,7 @@ private var cachedData = ""
 
 private var found = true
 
+@Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     JsonDataParser.OnDataParsed,
     RecyclerItemClickListener.OnRecyclerClickListener {
@@ -63,11 +63,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         Log.d(Tag, "RAW DATA FROM SPLASH IS $splashData")
         val getRawData = GetRawData(this)
-        if (splashData.isNotEmpty()) {
+        if (splashData!!.isNotEmpty()) {
             onDownloadComplete(Pair(splashData, -1), DownloadStatus.OK, 1)
         } else
             if (cachedData.isEmpty())
-                getRawData.downloadRawData("$currentQuery", 1)
+                getRawData.downloadRawData(currentQuery, 1)
             else
                 onDownloadComplete(Pair(cachedData, -1), DownloadStatus.OK, 1)
 
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         val listener = View.OnClickListener { v ->
             val b = v as Button
-            var link = b.text.toString().toLowerCase()
+            val link = b.text.toString().toLowerCase()
             currentQuery =
 
                 "https://newsapi.org/v2/top-headlines?q=$link&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c"
@@ -253,7 +253,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             }
         } ?: super.onBackPressed()
         test.isEnabled = true
-        hide(this)
+        hide()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -270,7 +270,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
                 val getRawData = GetRawData(this)
                 getRawData.downloadRawData(currentQuery, 1)
                 test.isEnabled = true
-                true
+
             }
             R.id.menu_aboutMe -> {
                 showaboutdialog()
@@ -278,11 +278,11 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             R.id.menu_bookmark -> {
                 val intent = Intent(this, Bookmarks::class.java)
                 startActivity(intent)
-                true
+
             }
             else -> {
                 Toast.makeText(this, "Not Possible", Toast.LENGTH_SHORT).show()
-                true
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -350,13 +350,12 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         popup.inflate(R.menu.menu_options)
         popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
             override fun onMenuItemClick(item: MenuItem): Boolean {
-                when (item.getItemId()) {
+                when (item.itemId) {
                     R.id.options_share -> {
-                        share(websitenews!!.title, websitenews!!.urlToArticle)
+                        share(websitenews!!.title, websitenews.urlToArticle)
                         return true
                     }
                     R.id.options_bookmark -> {
-                        Toast.makeText(this@MainActivity, "Coming Soon", Toast.LENGTH_SHORT).show()
                         addtoBookmark(websitenews)
                         return true
                     }
@@ -386,7 +385,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         values.put(NewsContract.Columns.NEWS_IMG, news.urlToImage)
         values.put(NewsContract.Columns.NEWS_LINK, news.urlToArticlle)
         GlobalScope.launch {
-            val uri = getApplication().contentResolver?.insert(
+            val uri = application.contentResolver?.insert(
                 NewsContract.CONTENT_URI,
                 values
             )
@@ -413,7 +412,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         }
     }
 
-    private fun hide(activity: Activity) {
+    private fun hide() {
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         )
@@ -429,9 +428,9 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
     }
 
     private fun share(title: String, link: String) {
-        val strBuilder = StringBuilder();
+        val strBuilder = StringBuilder()
         strBuilder.appendln(title)
-        strBuilder.appendln(link);
+        strBuilder.appendln(link)
         strBuilder.append("Share Via NewsApp@Sunny")
 
         val shareIntent =

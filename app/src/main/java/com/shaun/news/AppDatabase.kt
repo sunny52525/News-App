@@ -16,13 +16,15 @@ internal class AppDatabase constructor(context: Context) : SQLiteOpenHelper(
     override fun onCreate(db: SQLiteDatabase) {
 
         val sSQL = """ CREATE TABLE ${NewsContract.TABLE_NAME}(
-        ${NewsContract.Columns.ID} INTEGER PRIMARY KEY NOT NULL,
+        ${NewsContract.Columns.ID} INTEGER NOT NULL,
         ${NewsContract.Columns.NEWS_TITLE} TEXT ,
         ${NewsContract.Columns.NEWS_DESCRIPTION} TEXT ,
         ${NewsContract.Columns.NEWS_WEBSITE} TEXT ,
         ${NewsContract.Columns.NEWS_DATE} TEXT ,
         ${NewsContract.Columns.NEWS_LINK} TEXT ,
-        ${NewsContract.Columns.NEWS_IMG} TEXT );""".replaceIndent(" ")
+        ${NewsContract.Columns.NEWS_IMG} TEXT,PRIMARY KEY (${NewsContract.Columns.ID},${NewsContract.Columns.NEWS_TITLE});""".replaceIndent(
+            " "
+        )
         Log.d(TAG, sSQL)
         db.execSQL(sSQL)
     }
