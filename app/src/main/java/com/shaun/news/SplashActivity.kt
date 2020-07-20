@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 
 class SplashActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
@@ -15,7 +16,9 @@ class SplashActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault_NoActionBar)
+        supportActionBar!!.hide()
         setContentView(R.layout.activity_splash_screen)
+
         val getRawData = GetRawData(this)
         getRawData.downloadRawData(
             "https://newsapi.org/v2/top-headlines?q=india&sortBy=published&pageSize=100&apiKey=c5505b6406384fe2b1060c7dd66e957c",
@@ -28,7 +31,14 @@ class SplashActivity : AppCompatActivity(), GetRawData.OnDownloadComplete {
 
     override fun onDownloadComplete(data: Pair<String, Int>, status: DownloadStatus, id: Int) {
         rawdataa = data.first
-        StartMain(false)
+        if (!animation_view.isAnimating) {
+            StartMain(false)
+        } else {
+            Handler().postDelayed({
+                StartMain(false)
+            }, 3000)
+        }
+
     }
 
     private fun StartMain(toast: Boolean) {
