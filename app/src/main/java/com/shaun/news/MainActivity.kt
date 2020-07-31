@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         setContentView(R.layout.activity_main)
         recycler_view_news.visibility = View.GONE
         test.isRefreshing = true
-        configureBackdrop()
+         configureBackdrop()
 
         val splashData = intent.getStringExtra("RAW")
 
@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
 
         test.setOnRefreshListener {
             getRawData.downloadRawData(currentQuery, 1)
+            test.isRefreshing = true
         }
 
         recycler_view_news.layoutManager = LinearLayoutManager(this)
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
             )
             test.isRefreshing = true
 
+
         }
         backdrop_Health.setOnClickListener(listener)
         backdrop_business.setOnClickListener(listener)
@@ -186,8 +188,10 @@ class MainActivity : AppCompatActivity(), GetRawData.OnDownloadComplete,
         }
 
         recycler_view_news.visibility = View.VISIBLE
-        if (data.size != 0 || id == 2)
+        if (data.size != 0 || id == 2) {
+
             test.isRefreshing = false
+        }
         recycler_view_news.smoothScrollToPosition(0)
         Log.d(Tag, "onData Pared ends")
 
